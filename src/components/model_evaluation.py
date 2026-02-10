@@ -89,7 +89,7 @@ class ModelEvaluation:
         """
         try:
             test_df=pd.read_csv(self.data_ingestion_artifact.test_file_path)
-            x,y=test_df.drop(TARGET_COLUMN),test_df[TARGET_COLUMN]
+            x,y=test_df.drop(TARGET_COLUMN, axis=1),test_df[TARGET_COLUMN]
 
             logging.info("Test data and now transforming it for prediction...")
             x=self._map_gender_column(x)
@@ -110,7 +110,7 @@ class ModelEvaluation:
                 best_model_f1_score= f1_score(y,y_hat_best_model)
                 logging.info(f"F1_Score-Production Model: {best_model_f1_score} F1_Score-New Trained MOdel: {trained_model_f1_score}")
             
-            tmp_best_model=0 if best_model_f1_score is None else best_model_f1_score
+            tmp_best_model_score=0 if best_model_f1_score is None else best_model_f1_score
             result=EvaluateModelResponse(trained_model_f1_score=trained_model_f1_score,
                                            best_model_f1_score=best_model_f1_score,
                                            is_model_accepted=trained_model_f1_score > tmp_best_model_score,
@@ -122,7 +122,7 @@ class ModelEvaluation:
         except Exception as e:
             raise MyException(e, sys)
     
-    def initaiate_model_evaluation(self) -> ModelEvaluationArtifact:
+    def initiate_model_evaluation(self) -> ModelEvaluationArtifact:
         """
         Method Name :   initiate_model_evaluation
         Description :   This function is used to initiate all steps of the model evaluation
